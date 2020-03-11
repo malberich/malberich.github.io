@@ -1,0 +1,381 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>M'interessa: Universitat of Barcelona Postgraduate Capstone project</title>
+    <link rel="stylesheet" type="text/css" href="/assets/bootstrap/css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="/assets/font-awesome/css/font-awesome.min.css"/>
+    <link rel="stylesheet" type="text/css" href="/assets/dc/2.0.0-b26/dc.css"/>
+  </head>
+  <body>
+    <nav class="navbar navbar-default">
+      <a class="navbar-brand" href="#">
+        M'interessa postgraduate
+      </a>
+      <div class="container-fluid">
+        <div class="collapse navbar-collapse">
+          <p class="navbar-text">
+            <a class="navbar-link" href="https://minteressa.github.io/" target="_blank">
+              Check the M'interessa project page
+            </a>
+          </p>
+          <p class="navbar-text navbar-right">
+            by
+            <a href="/">
+              Mario Alberich
+              <i class="fa fa-arrow-right" aria-hidden="true"></i>
+            </a>
+            et al.
+          </p>
+        </div>
+      </div>
+    </nav>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-4 col-xs-12">
+          <div class="alert alert-warning">
+            <h3>What was the project about?</h3>
+            <p>
+              <a href="https://minteressa.github.io/team" target="_blank">We</a> aimed to build a service that could help a user fetch tweets from twitter and get them filter so that the user should only see the less spammy/unrelevant tweets.
+            </p>
+            <p>
+              The tweets were already prefiltered:
+              <ul>
+                <li><strong>Sampled stream</strong>: The twitter connection was performed through the public sample (which means 1% sample of all tweets worldwide).</li>
+                <li><strong>Language filter</strong>: We filtered out tweets with languages other than English and Spanish</li>
+              </ul>
+            </p>
+            <p>
+              After that:
+              <ul>
+                <li><strong>Near-duplicate filter:</strong>The tweets that looked "too similar" to previous tweets where considered near-duplicates. <a href="https://en.wikipedia.org/wiki/Locality-sensitive_hashing" target="_blank">Locality-Sensitive Hashing</a> and <a href="https://en.wikipedia.org/wiki/MinHash" target="_blank">Minhash</a> techniques were used for that purpose.</li>
+                <li><strong>Relevance classifier:</strong>This was the model that was indirectly supervised by the user, by selecting/discarding them. Vowpal Wabbit and its <a href="http://cilvr.cs.nyu.edu/diglib/lsml/lecture12_active.pdf" target="_blank">Active Learning</a> approaches were used.</li>
+              </ul>
+            </p>
+            <br/>
+          </div>
+        </div>
+        <div class="col-md-4 col-xs-12">
+          <div class="alert alert-warning">
+            <h3>What tools did we use?</h3>
+            <br/>
+            <p>
+              <h4>Programming languages and modelling</h4>
+              <ul>
+                <li><a target="_blank" href="http://www.scala-lang.org/">Scala</a> as programming language for the Twitter stream ingestion.</li>
+                <li><a target="_blank" href="https://www.python.org">Python</a> toolset (including among other datasketch, <a target="_blank" href="http://scikit-learn.org/">scikit-learn</a>, etc)</li>
+                <li><a target="_blank" href="https://github.com/JohnLangford/vowpal_wabbit/wiki">Vowpal wabbit</a> for the Online Machine Learning and Active Learning</li>
+              </ul>
+              <br/>
+              <h4>Infrastructure</h4>
+              <ul>
+                <li><a target="_blank" href="https://kafka.apache.org/">Apache Kafka</a> as a queue manager/stream aggregator</li>
+                <li><a target="_blank" href="https://www.docker.com/">Docker</a> and <a target="_blank" href="https://docs.docker.com/compose/">docker-compose</a> for the containerization</li>
+              </ul>
+              <br/>
+              <h4>UI / Data visualization</h4>
+              <ul>
+                <li><a target="_blank" href="https://jekyllrb.com/">Jekyll</a> and <a target="_blank" href="https://dc-js.github.io/dc.js/">DC.js</a> for the website development</li>
+                <li><a target="_blank" href="https://en.wikipedia.org/wiki/MEAN_(software_bundle)">MEAN stack</a> for UI (the twitter filter assistant, not the website)</li>
+              </ul>
+            </p>
+            <br/>
+          </div>
+        </div>
+        <div class="col-md-4 col-xs-12">
+          <div class="alert alert-warning">
+            <h3>Which were the main challenges?</h3>
+            <h4>Technology</h4>
+            <p>Apache Kafka was found to be a very tricky tool, specially when connecting from/to Python and NodeJS. Also docker/docker-compose appeared to raise issues caused by the local caching of images, volumes and containers.</p>
+            <br/>
+            <h4>Pipeline</h4>
+            <p>The data pipeline comming from a twitter Stream to a MongoDB and AngularJS UI had some issues, specially regarding the connection to the Vowpal Wabbit container through a socket. Also, some memory issues appeared when the near-duplicates filter started to grow.</p>
+            <br/>
+            <h4>Modelling</h4>
+            <p>The vectorization of the tweet and the implementation of an online learning model proved to be at the same time challenging and quite productive, as we could incrementally add labeled tweets to the model.</p>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="alert alert-info">
+            <h3>How did the supervised modelling perform?</h3>
+            <div class="container-fluid">
+              <div class="row">
+                <p>We selected a dataset of about 50k tweets, which included some specifically selected topics. </p>
+                <p>Then configured a script to perform a grid search with Vowpal Wabbit over the model parameters.</p>
+                <p>The result of all those combinations raised approximately 16k combinations of tests and scores, which are being visualized below.</p>
+                <p>
+                  In order to filter the data and find the best model for your needs, you should:
+                  <ul>
+                    <li>Select the range of values in the model scores below (the chosen score for our model was F-score)</li>
+                    <li>Check which models and parameters were fitting best the data</li>
+                  </ul>
+                  In our case, it was a neural network with 1 layer (which is almost the same as a logistic regression).
+                </p>
+              </div>
+              <div class="row">
+                  <div class="col-xs-3">
+                  <h3>Loss Function</h3>
+                     <div id="chart-ring-lossfunc" class="col-xs-3"></div>
+                  </div>
+
+                  <div class="col-xs-3">
+                  <h3>Algorithm</h3>
+                      <div id="chart-ring-kernel" class="col-xs-3"></div>
+                  </div>
+
+                  <div class="col-xs-3">
+                      <h3>Decay</h3>
+                      <div id="chart-ring-decay"></div>
+                  </div>
+              </div>
+              <div class="row">
+                <div class="col-xs-3">
+                    <h3>Ngram</h3>
+                    <div id="chart-ring-ngram"></div>
+                </div>
+                <div class="col-xs-3">
+                   <h3>Skip</h3>
+                  <div id="chart-ring-skip"></div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-xs-3">
+                  <h3>Learning Rate</h3>
+                  <div id="chart-ring-learning_rate"></div>
+                </div>
+
+                <div class="col-xs-3">
+                  <h3>Pred Threshold</h3>
+                  <div id="chart-ring-pred_thresh"></div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-xs-3">
+                  <h3>Precision</h3>
+                  <div id="chart-PRE"></div>
+                </div>
+                <div class="col-xs-3">
+                  <h3>Recall</h3>
+                  <div id="chart-REC"></div>
+                </div>
+                <div class="col-xs-3">
+                  <h3>Accuracy</h3>
+                  <div id="chart-ACC"></div>
+                </div>
+                <div class="col-xs-3">
+                  <h3>F-measure</h3>
+                  <div id="chart-PRF"></div>
+                </div>
+              </div>
+            </div>
+
+    <script type="text/javascript" src="/assets/d3/d3.v3.min.js"></script>
+    <script type="text/javascript" src="/assets/crossfilter/crossfilter.min.js"></script>
+    <script type="text/javascript" src="/assets/dc/2.0.0-b26/dc.js"></script>
+    <script type="text/javascript">
+
+
+var lossfuncRingChart = dc.pieChart("#chart-ring-lossfunc"),
+    kernelRingChart = dc.pieChart("#chart-ring-kernel"),
+    decayRingChart = dc.pieChart("#chart-ring-decay"),
+    ngramRingChart = dc.pieChart("#chart-ring-ngram"),
+    skipRingChart = dc.pieChart("#chart-ring-skip"),
+    learning_rateRingChart = dc.pieChart("#chart-ring-learning_rate"),
+    pred_threshRingChart = dc.pieChart("#chart-ring-pred_thresh"),
+    PRERowChart = dc.lineChart("#chart-PRE"),
+    RECRowChart = dc.lineChart("#chart-REC"),
+    ACCRowChart = dc.lineChart("#chart-ACC"),
+    PRFRowChart = dc.lineChart("#chart-PRF"),
+    ROCRowChart = dc.lineChart("#chart-ROC")
+    PRECols = 10,
+    ACCCols = 10,
+    RECCols = 10,
+    PRFCols = 10,
+    ROCCols = 10;
+
+
+d3.csv("./gridsearch-nourls-isis.csv", function(error, experiments) {
+  experiments.forEach(function(x) {
+    x.PRE = Math.floor( parseFloat( x.PRE ) * PRECols * 10 ) / 10;
+  x.ACC = Math.floor( parseFloat( x.ACC ) * ACCCols * 10 ) / 10;
+  x.REC = Math.floor( parseFloat( x.REC ) * RECCols * 10 ) / 10;
+    x.PRF = Math.floor( parseFloat( x.PRF ) * PRFCols * 10 ) / 10;
+  x.ROC = Math.floor( parseFloat( x.ROC ) * ROCCols * 10 ) / 10;
+  });
+  // lossDimension = return map[d.lossfunc]
+
+  // set crossfilter with first dataset
+  var ndx = crossfilter(experiments),
+
+
+    lossfuncDim  = ndx.dimension(function(d) {return d.lossfunc;}),
+    kernelDim  = ndx.dimension(function(d) {return d.kernel;}),
+    decayDim  = ndx.dimension(function(d) {return d.decay;}),
+    ngramDim  = ndx.dimension(function(d) {return d.ngram;}),
+    skipDim  = ndx.dimension(function(d) {return d.skip;}),
+    learning_rateDim  = ndx.dimension(function(d) {return d.learning_rate;}),
+    pred_threshDim  = ndx.dimension(function(d) {return d.pred_thresh;}),
+    PREDim = ndx.dimension(function(d) {return d.PRE;}),
+    ACCDim = ndx.dimension(function(d) {return d.ACC;}),
+    RECDim = ndx.dimension(function(d) {return d.REC;}),
+    PRFDim = ndx.dimension(function(d) {return d.PRF;}),
+    ROCDim = ndx.dimension(function(d) {return d.ROC;});
+
+    countPerLoss = lossfuncDim.group().reduceCount(),
+    countPerKernel = kernelDim.group().reduceCount(),
+    countPerDecay = decayDim.group().reduceCount(),
+    countPerNgram = ngramDim.group().reduceCount(),
+    countPerSkip = skipDim.group().reduceCount(),
+    countPerLearning_rate = learning_rateDim.group().reduceCount(),
+    countPerPred_thresh = pred_threshDim.group().reduceCount(),
+    countPerPRE = PREDim.group().reduceCount(),
+    countPerREC = RECDim.group().reduceCount(),
+    countPerACC = ACCDim.group().reduceCount();
+    countPerROC = ROCDim.group().reduceCount(),
+    countPerPRF = PRFDim.group().reduceCount();
+
+function render_plots(){
+    lossfuncRingChart
+        .width(150).height(150)
+        .dimension(lossfuncDim)
+        .group(countPerLoss)
+        .innerRadius(0)
+
+    ;
+
+
+  kernelRingChart
+        .width(150).height(150)
+        .dimension(kernelDim)
+        .group(countPerKernel)
+        .innerRadius(0)
+
+    ;
+
+
+    decayRingChart
+        .width(150).height(150)
+        .dimension(decayDim)
+        .group(countPerDecay)
+        .innerRadius(0)
+
+    ;
+
+
+  ngramRingChart
+        .width(150).height(150)
+        .dimension(ngramDim)
+        .group(countPerNgram)
+        .innerRadius(0)
+
+    ;
+
+
+  skipRingChart
+        .width(150).height(150)
+        .dimension(skipDim)
+        .group(countPerSkip)
+        .innerRadius(0)
+
+    ;
+
+
+  learning_rateRingChart
+        .width(150).height(150)
+        .dimension(learning_rateDim)
+        .group(countPerLearning_rate)
+        .innerRadius(0)
+
+    ;
+
+
+  pred_threshRingChart
+        .width(150).height(150)
+        .dimension(pred_threshDim)
+        .group(countPerPred_thresh)
+        .innerRadius(0)
+
+    ;
+
+
+    ACCRowChart
+        .width(400)
+    .height(200)
+    .renderArea(true)
+        .dimension(ACCDim)
+    .x(d3.scale.linear().domain([0, ACCCols]))
+        .group(countPerACC)
+    .title("Accuracy");
+
+    PRERowChart
+        .width(350)
+    .height(200)
+    .renderArea(true)
+        .dimension(RECDim)
+    .x(d3.scale.linear().domain([0, PRECols]))
+        .group(countPerREC)
+    .renderTitle(true)
+    .title("Precision");
+
+    RECRowChart
+        .width(350)
+    .height(200)
+    .renderArea(true)
+        .dimension(RECDim)
+    .x(d3.scale.linear().domain([0, PRECols]))
+        .group(countPerPRE)
+    .title("Recall");
+
+    PRFRowChart
+        .width(400)
+    .height(200)
+    .renderArea(true)
+        .dimension(PRFDim)
+    .x(d3.scale.linear().domain([0, PRFCols]))
+        .group(countPerPRF)
+    .renderTitle(true)
+    .title("F-measure");
+
+    ROCRowChart
+        .width(400)
+    .height(200)
+    .renderArea(true)
+        .dimension(ROCDim)
+    .x(d3.scale.linear().domain([0, ROCCols]))
+        .group(countPerROC)
+    .title("ROC");
+
+    dc.renderAll();
+}
+render_plots();
+
+});
+
+
+
+
+    </script>
+
+          </div>
+        </div>
+      </div>
+    </div>
+    <script type="text/javascript" src="/assets/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="/assets/bootstrap/js/bootstrap.min.js"></script>
+    <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-3459440-2', 'auto');
+  ga('send', 'pageview');
+
+</script>
+  </body>
+</html>

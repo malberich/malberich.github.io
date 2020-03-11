@@ -1,0 +1,130 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Motorcycle dataviz</title>
+    <link rel="stylesheet" type="text/css" href="/assets/dc/2.0.0-b26/dc.css"/>
+    <link rel="stylesheet" type="text/css" href="/assets/colorbrewer/colorbrewer.css"/>
+    <link rel="stylesheet" type="text/css" href="/assets/bootstrap/css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="/assets/font-awesome/css/font-awesome.min.css"/>
+    <link rel="stylesheet" type="text/css" href="css/style.css"/>
+  </head>
+  <body>
+    <nav class="navbar navbar-default">
+      <a class="navbar-brand" href="#">
+        Motorcycle Math Dataviz competition (CrowdAnalytix)
+      </a>
+      <div class="container-fluid">
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li class="dropdown">
+              <a href="#" id="moreinfo" data-toggle="popover" role="button">
+                What is this?
+              </a>
+              <ul class="dropdown-menu" role="menu">
+                <li>
+                  <a href="https://www.crowdanalytix.com/contests/visualization-motorcycle-math" target="_blank">
+                    Competition page
+                  </a>
+                </li>
+              </ul>
+            </li>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"><strong>Bring me to the insights</strong><span class="caret"></span></a>
+              <ul class="dropdown-menu" role="menu">
+                <li><a href="#" onclick="speedPatterns();">Speed patterns</a></li>
+                <li><a href="#" onclick="accelerationPatterns();">Acceleration patterns</a></li>
+                <li><a href="#" onclick="bankingDifferences();">Banking behavior</a></li>
+              </ul>
+            </li>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button">Circuit metric<span class="caret"></span></a>
+              <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                <li><a href="#" onclick="changeValueAccessor(circuitMap, {name: 'speed', label: 'Average speed', units: 'm/s'});">Average Speed (m/s)</a></li>
+                <li><a href="#" onclick="changeValueAccessor(circuitMap, {name: 'acc', label: 'Average acceleration', units: 'm/s\xb2;'});">Average acceleration (m/s&sup2;)</a></li>
+                <li><a href="#" onclick="changeValueAccessor(circuitMap, {name: 'bank', label: 'Banking angle', units: 'deg'});">Banking angle (degrees)</a></li>
+
+              </ul>
+            </li>
+            <li>
+              <a href="#" onclick="switchDriver()">Switch driver</a>
+            </li>
+            <li>
+              <a href="#" onclick="dc.filterAll();dc.redrawAll();">
+                <i class="fa fa-refresh"></i>
+                Clear filters
+              </a>
+            </li>
+          </ul>
+          <p class="navbar-text navbar-right">
+            by
+            <a href="/">
+              Mario Alberich
+              <i class="fa fa-arrow-right" aria-hidden="true"></i>
+            </a>
+          </p>
+        </div>
+      </div>
+    </nav>
+    <div class="container-fluid">
+      <div class="row">
+        <h2 id="loading" class="alert alert-warning">
+          <i class="fa fa-refresh fa-spin fa-fw"></i>
+          Please, be patient as it may take a while to load the data
+        </h2>
+
+        <div class="col-lg-6 col-sm-12">
+          <div id="circuit" class="col-xs-12">
+            <h2><span rel="metric">Average speed</span> by circuit segment</h2>
+            <div id="insightExplain" class="alert alert-warning alert-dismissible" role="alert" style="display:none">
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-6 col-sm-12">
+          <h2>Click over the bars or drag&amp;drop along the areas to filter</h2>
+          <div class="row">
+            <div id="lap" class="col-xs-6"></div>
+            <div id="driver" class="col-xs-6"></div>
+          </div>
+          <div id="radius" class="col-xs-12"></div>
+          <div id="speed" class="col-xs-12"></div>
+          <div id="accel" class="col-xs-12"></div>
+        </div>
+      </div>
+    </div>
+    <script type="text/javascript" src="/assets/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="/assets/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="js/underscore/underscore-min.js"></script>
+    <script type="text/javascript" src="/assets/d3/d3.v3.min.js"></script>
+    <script type="text/javascript" src="/assets/crossfilter/crossfilter.min.js"></script>
+    <script type="text/javascript" src="/assets/dc/2.0.0-b26/dc.min.js"></script>
+    <script type="text/javascript" src="/assets/colorbrewer/colorbrewer.js"></script>
+    <script type="text/javascript" src="js/motoviz.js"></script>
+    <script type="text/javascript" src="js/insights.js"></script>
+    <script type="text/javascript">
+      $(document).ready(
+        function () {
+          $('#moreinfo').popover({
+            html: true,
+            container: 'body',
+            placement: 'bottom',
+            content: '<p>This is a data visualization built to show the data of a motorcycle competition between two drivers: a world champion and an amateur racer. <strong>What makes them different?</strong></p>' +
+            '<p>The original data visualization was done in only 72 hours, including the <a href="http://r-project.org/" target="_blank">R</a> scripts for the data preparation, and the build of the visualization itself. It lacked of a deeper review, so this is an slightly improved version with some error fixes, some (not too deep) responsivity tests, an upgrade to DC 2.0, and some interaction improvements.</p>' +
+            '<p>In order to see some relevant details, you can select the options into the <strong>Bring me to the insights</strong> menu, or browse the data by clicking of the right-hand charts.</p>' +
+            '<p>The data was provided in a <a href="https://www.crowdanalytix.com/contests/visualization-motorcycle-math" target="_blank">Crowdanalytix competition</a>.</p>'
+
+          });
+        }
+      );
+    </script>
+    <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-3459440-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+  </body>
+</html>

@@ -1,0 +1,94 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>ELIXIR Beacon Frontend</title>
+    <link rel="stylesheet" type="text/css" href="/assets/bootstrap/css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="/assets/font-awesome/css/font-awesome.min.css"/>
+  </head>
+  <body>
+    <nav class="navbar navbar-default">
+      <a class="navbar-brand" href="#">
+        Elixir Beacon User Interface
+      </a>
+      <div class="container-fluid">
+        <div class="collapse navbar-collapse">
+          <p class="navbar-text">
+            <a class="navbar-link" href="https://github.com/elixir-europe/human-data-beacon-ui/" target="_blank">
+              Check the Elixir Human Data Beacon UI repository
+            </a>
+          </p>
+          <p class="navbar-text navbar-right">
+            by
+            <a href="/">
+              Mario Alberich
+              <i class="fa fa-arrow-right" aria-hidden="true"></i>
+            </a>
+          </p>
+        </div>
+      </div>
+    </nav>
+    <div class="container-fluid">
+      <div class="row" rel="instructions">
+        <div class="col-md-4 col-xs-12">
+          <div class="alert alert-warning">
+            <h3>What is a Beacon?</h3>
+            <p>
+              From <a href="https://genomicsandhealth.org/work-products-demonstration-projects/beacon-project-0" target="_blank">The Beacon project</a> website's <a href="https://genomicsandhealth.org/files/public/Beacon-FAQ.pdf" target="_blank">FAQs</a>:
+            </p>
+            <p><i>A Beacon is an online web service that allows users to query an institution’s databases to determine whether they contain a genetic variant of interest. The query is structured as a yes/no question of the form: "Do you have any genomes with an 'X' at position Y on chromosome Z?"</i>
+            </p>
+            <p>All the trademarks cited herein and their respective logos are the property of their respective owners. Their citation in this document doesn't imply their endorsement to this project.</p>
+          </div>
+        </div>
+        <div class="col-md-4 col-xs-12">
+          <div class="alert alert-warning">
+            <h3>How has this project been developed</h3>
+            <p>
+              In order to expose the backend API of the Elixir Beacon in a more user-friendly way, it was built this frontend. It was built using <a href="https://angularjs.org/" target="_blank">AngularJS 1.4.9</a> and the <a href="" target="_blank">Twitter Bootstrap CSS framework</a>, along with the required modules.
+            </p>
+            <p>
+              The tool works for all the users whether anonymous or authenticated, and performs specific queries over the datasets when the user, once logged in,  in order
+            </p>
+            <p>
+              It has been released under the terms of the Apache 2.0 Open Source License, so that you can use it at your will and under your responsibility.
+            </p>
+          </div>
+        </div>
+        <div class="col-md-4 col-xs-12">
+          <div class="alert alert-warning">
+            <h3>Dockerization for fast build and deploy</h3>
+            <p>
+              The repository includes a full-stack docker-compose configuration file, which allows to create three containers: Database (PostgreSQL), Backend and Frontend.
+            </p>
+            <p>
+              A user with a up-to-date version of <a href="https://www.docker.com/" target="_blank">Docker</a> and <a href="https://docs.docker.com/compose/" target="_blank">docker-compose</a> is able to run a site with the one shown in the screenshot below, in a matter of 15-30 minutes (depending on the CPU and network connection required to build the containers).
+            </p>
+            <p>
+              The current implementation supports the version 0.3 of the Beacon API specification, which is still an early version and will evolve in the near future.
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="row" rel="instructions">
+        <div class="col-xs-12">
+          <h2>Demo screenshot</h2>
+        </div>
+        <div class="col-md-8 col-md-offset-2 col-xs-12">
+          <img src="img/screenshot.png" class="img img-responsive" alt="Elixir Beacon UI with the dockerized data demo"
+        </div>
+      </div>
+    </div>
+    <script type="text/javascript" src="/assets/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="/assets/bootstrap/js/bootstrap.min.js"></script>
+    <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-3459440-2', 'auto');
+  ga('send', 'pageview');
+
+</script>
+  </body>
+</html>
